@@ -16,7 +16,8 @@ import javax.persistence.Table;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import org.hibernate.testing.TestForIssue;
+import org.hibernate.testing.DialectChecks;
+import org.hibernate.testing.RequiresDialectFeature;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 import org.junit.Test;
 
@@ -25,14 +26,16 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Vlad Mihalcea
  */
+@RequiresDialectFeature( value = DialectChecks.SupportsIdentityColumns.class, jiraKey = "HHH-9271")
 public class QuotedIdentifierTest extends BaseCoreFunctionalTestCase {
+
 	@Test
-	@TestForIssue( jiraKey="HHH-9271" )
 	public void testDirectIdPropertyAccess() throws Exception {
 		Session s = openSession();
 		Transaction transaction = s.beginTransaction();
 		QuotedIdentifier o = new QuotedIdentifier();
 		o.timestamp = System.currentTimeMillis();
+		o.from = "HHH-9271";
 		s.persist( o );
 		transaction.commit();
 		s.close();
@@ -63,5 +66,8 @@ public class QuotedIdentifierTest extends BaseCoreFunctionalTestCase {
 
 		@Column(name = "`timestamp`")
 		private long timestamp;
+
+		@Column(name = "`from`")
+		private String from;
 	}
 }
