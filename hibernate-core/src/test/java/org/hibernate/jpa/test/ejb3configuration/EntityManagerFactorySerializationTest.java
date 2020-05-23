@@ -109,7 +109,7 @@ public class EntityManagerFactorySerializationTest extends BaseEntityManagerFunc
 		byteIn.close();
 
 		assertTrue("deserialized EntityManagerFactory should be the same original EntityManagerFactory instance",
-				entityManagerFactory2 == entityManagerFactory);
+				   getSessionFactoryDelegate(entityManagerFactory2) == getSessionFactoryDelegate(entityManagerFactory));
 	}
 
 	@Test

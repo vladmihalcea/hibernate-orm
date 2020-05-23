@@ -19,6 +19,7 @@ import org.hibernate.boot.spi.MetadataBuildingContext;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.type.StandardBasicTypes;
@@ -48,7 +49,7 @@ public class SequenceHiLoGeneratorNoIncrementTest extends BaseUnitTestCase {
 	private StandardServiceRegistry serviceRegistry;
 	private SessionFactoryImplementor sessionFactory;
 	private SequenceStyleGenerator generator;
-	private SessionImplementor sessionImpl;
+	private SharedSessionContractImplementor sessionImpl;
 	private SequenceValueExtractor sequenceValueExtractor;
 
 	@Before
@@ -98,7 +99,7 @@ public class SequenceHiLoGeneratorNoIncrementTest extends BaseUnitTestCase {
 
 	@Test
 	public void testHiLoAlgorithm() {
-		sessionImpl = (SessionImpl) sessionFactory.openSession();
+		sessionImpl = (SharedSessionContractImplementor) sessionFactory.openSession();
 
 		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		// historically the hilo generators skipped the initial block of values;

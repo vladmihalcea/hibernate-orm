@@ -52,7 +52,6 @@ public abstract class QueryTranslatorTestCase extends BaseCoreFunctionalTestCase
 				"legacy/Category.hbm.xml",
 				"legacy/Commento.hbm.xml",
 				"legacy/Container.hbm.xml",
-				"legacy/Custom.hbm.xml",
 				"legacy/Eye.hbm.xml",
 				"legacy/Fee.hbm.xml",
 				"legacy/FooBar.hbm.xml",

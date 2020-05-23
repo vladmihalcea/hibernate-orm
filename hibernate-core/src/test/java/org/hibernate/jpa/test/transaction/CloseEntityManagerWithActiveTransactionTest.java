@@ -27,6 +27,7 @@ import javax.transaction.TransactionManager;
 
 import org.hibernate.Session;
 import org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.jpa.AvailableSettings;
 import org.hibernate.jpa.test.BaseEntityManagerFunctionalTestCase;
@@ -318,7 +319,7 @@ public class CloseEntityManagerWithActiveTransactionTest extends BaseEntityManag
 			Box box = new Box();
 			box.setColor( "red-and-white" );
 			em.persist( box );
-			final SessionImpl session = (SessionImpl) em.unwrap( Session.class );
+			final SharedSessionContractImplementor session = (SharedSessionContractImplementor) em.unwrap( Session.class );
 			final JdbcCoordinatorImpl jdbcCoordinator = (JdbcCoordinatorImpl) session.getJdbcCoordinator();
 			em.close();
 			TestingJtaPlatformImpl.INSTANCE.getTransactionManager().commit();

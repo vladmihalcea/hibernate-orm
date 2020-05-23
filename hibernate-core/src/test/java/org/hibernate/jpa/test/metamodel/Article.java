@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.jpa.test.callbacks.Translation;
+
 /**
  * @author Steve Ebersole
  */

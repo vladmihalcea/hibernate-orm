@@ -9,6 +9,7 @@ package org.hibernate.test.joinwithoutancestor;
 import org.hibernate.Session;
 import org.hibernate.engine.query.spi.HQLQueryPlan;
 import org.hibernate.engine.query.spi.QueryPlanCache;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.hql.spi.QueryTranslator;
 import org.hibernate.internal.SessionImpl;
 
@@ -39,7 +40,7 @@ public abstract class OmitAncestorTestCase extends BaseCoreFunctionalTestCase {
 		HQLQueryPlan hqlQueryPlan = queryPlanCache.getHQLQueryPlan(
 				hql,
 				false,
-				( (SessionImpl) session ).getLoadQueryInfluencers().getEnabledFilters()
+				( (SessionImplementor) session ).getLoadQueryInfluencers().getEnabledFilters()
 		);
 		QueryTranslator queryTranslator = hqlQueryPlan.getTranslators()[0];
 		String sql = queryTranslator.getSQLString();

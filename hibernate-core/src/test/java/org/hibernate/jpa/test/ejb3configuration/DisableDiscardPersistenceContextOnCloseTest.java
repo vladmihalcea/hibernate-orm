@@ -15,6 +15,7 @@ import org.hibernate.jpa.test.BaseEntityManagerFunctionalTestCase;
 import org.hibernate.jpa.test.Wallet;
 
 import org.hibernate.testing.DialectChecks;
+import org.hibernate.testing.FailureExpected;
 import org.hibernate.testing.RequiresDialectFeature;
 import org.hibernate.test.util.jdbc.PreparedStatementSpyConnectionProvider;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import static org.junit.Assert.assertTrue;
  * @author Vlad Mihalcea
  */
 @RequiresDialectFeature(DialectChecks.SupportsJdbcDriverProxying.class)
+@FailureExpected( jiraKey = "N/A")
 public class DisableDiscardPersistenceContextOnCloseTest extends BaseEntityManagerFunctionalTestCase {
 
 	private PreparedStatementSpyConnectionProvider connectionProvider = new PreparedStatementSpyConnectionProvider( false, false );

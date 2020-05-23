@@ -64,8 +64,9 @@ dependencies {
     testCompile( libraries.mockito )
     testCompile( libraries.mockito_inline )
     testCompile( libraries.jodaTime )
+	testCompile( libraries.hypersistence_optimizer )
 
-    testCompile( libraries.cdi ) {
+	testCompile( libraries.cdi ) {
         // we need to force it to make sure we influence the one coming from arquillian
         force=true
     }

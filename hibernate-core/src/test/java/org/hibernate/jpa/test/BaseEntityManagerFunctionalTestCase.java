@@ -16,22 +16,31 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 
+import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
 import org.hibernate.bytecode.enhance.spi.EnhancementContext;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.jpa.boot.spi.Bootstrap;
 import org.hibernate.jpa.boot.spi.PersistenceUnitDescriptor;
 import org.hibernate.testing.junit4.BaseUnitTestCase;
 import org.junit.After;
 import org.junit.Before;
+
+import io.hypersistence.optimizer.HypersistenceOptimizer;
+import io.hypersistence.optimizer.core.config.JpaConfig;
+import io.hypersistence.optimizer.core.exception.DefaultExceptionHandler;
+
+import static org.junit.Assert.fail;
 
 /**
  * A base class for all ejb tests.
@@ -64,6 +73,10 @@ public abstract class BaseEntityManagerFunctionalTestCase extends BaseUnitTestCa
 		return serviceRegistry;
 	}
 
+	private HypersistenceOptimizer hypersistenceOptimizer;
+
+	private List<Exception> hypersistenceOptimizerExceptions = new ArrayList<Exception>();
+
 	@Before
 	@SuppressWarnings( {"UnusedDeclaration"})
 	public void buildEntityManagerFactory() {
@@ -74,13 +87,25 @@ public abstract class BaseEntityManagerFunctionalTestCase extends BaseUnitTestCa
 				buildSettings()
 		).build().unwrap( SessionFactoryImplementor.class );
 
+		hypersistenceOptimizer = new HypersistenceOptimizer(
+				new JpaConfig( entityManagerFactory)
+						.setExceptionHandler(e -> {
+							DefaultExceptionHandler.INSTANCE.handle( e);
+							hypersistenceOptimizerExceptions.add(e);
+						})
+		);
+
 		serviceRegistry = (StandardServiceRegistryImpl) entityManagerFactory.getServiceRegistry()
 				.getParentServiceRegistry();
 
 		afterEntityManagerFactoryBuilt();
 	}
 
-	private PersistenceUnitDescriptor buildPersistenceUnitDescriptor() {
+	protected SessionFactory getSessionFactoryDelegate(EntityManagerFactory entityManagerFactory) {
+		return entityManagerFactory.unwrap( SessionFactoryImpl.class );
+	}
+
+	protected PersistenceUnitDescriptor buildPersistenceUnitDescriptor() {
 		return new TestingPersistenceUnitDescriptorImpl( getClass().getSimpleName() );
 	}
 
@@ -266,6 +291,9 @@ public abstract class BaseEntityManagerFunctionalTestCase extends BaseUnitTestCa
 			if ( entityManagerFactory != null && entityManagerFactory.isOpen()) {
 				entityManagerFactory.close();
 			}
+		}
+		if (!hypersistenceOptimizerExceptions.isEmpty()) {
+			fail("The test thrown the following exceptions: " + hypersistenceOptimizerExceptions);
 		}
 		// Note we don't destroy the service registry as we are not the ones creating it
 	}

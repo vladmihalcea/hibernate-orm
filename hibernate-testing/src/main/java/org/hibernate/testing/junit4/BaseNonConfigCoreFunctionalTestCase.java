@@ -11,13 +11,13 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.NClob;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import io.hypersistence.optimizer.HypersistenceOptimizer;
+import io.hypersistence.optimizer.core.config.HibernateConfig;
+import io.hypersistence.optimizer.core.exception.DefaultExceptionHandler;
 import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
 import org.hibernate.Session;
@@ -136,6 +136,10 @@ public class BaseNonConfigCoreFunctionalTestCase extends BaseUnitTestCase {
 		buildResources();
 	}
 
+	private HypersistenceOptimizer hypersistenceOptimizer;
+
+	private List<Exception> hypersistenceOptimizerExceptions = new ArrayList<Exception>();
+
 	protected void buildResources() {
 		final StandardServiceRegistryBuilder ssrb = constructStandardServiceRegistryBuilder();
 
@@ -158,6 +162,15 @@ public class BaseNonConfigCoreFunctionalTestCase extends BaseUnitTestCase {
 		configureSessionFactoryBuilder( sfb );
 
 		sessionFactory = (SessionFactoryImplementor) sfb.build();
+
+		hypersistenceOptimizer = new HypersistenceOptimizer(
+				new HibernateConfig(sessionFactory)
+						.setExceptionHandler(e -> {
+							DefaultExceptionHandler.INSTANCE.handle(e);
+							hypersistenceOptimizerExceptions.add(e);
+						})
+		);
+
 		afterSessionFactoryBuilt( sessionFactory );
 	}
 
@@ -425,6 +438,10 @@ public class BaseNonConfigCoreFunctionalTestCase extends BaseUnitTestCase {
 			}
 		}
 		serviceRegistry=null;
+
+		if (!hypersistenceOptimizerExceptions.isEmpty()) {
+			fail("The test thrown the following exceptions: " + hypersistenceOptimizerExceptions);
+		}
 	}
 
 	@OnFailure

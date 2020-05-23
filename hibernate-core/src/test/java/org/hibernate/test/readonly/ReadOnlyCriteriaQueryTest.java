@@ -8,8 +8,6 @@ package org.hibernate.test.readonly;
 
 import java.util.List;
 
-import org.junit.Test;
-
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.ScrollableResults;
@@ -26,7 +24,9 @@ import org.hibernate.dialect.SybaseASE15Dialect;
 import org.hibernate.internal.util.SerializationHelper;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
+
 import org.hibernate.testing.SkipForDialect;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1275,7 +1275,7 @@ public class ReadOnlyCriteriaQueryTest extends AbstractReadOnlyTest {
 	private void checkProxyReadOnly(Session s, Object proxy, boolean expectedReadOnly) {
 		assertTrue( proxy instanceof HibernateProxy );
 		LazyInitializer li = ( ( HibernateProxy ) proxy ).getHibernateLazyInitializer();
-		assertSame( s, li.getSession() );
+		assertSame( getSessionDelegate(s), li.getSession() );
 		assertEquals( expectedReadOnly, s.isReadOnly( proxy ) );
 		assertEquals( expectedReadOnly, li.isReadOnly() );
 		assertEquals( Hibernate.isInitialized( proxy ), ! li.isUninitialized() );

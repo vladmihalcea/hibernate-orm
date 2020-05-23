@@ -6,14 +6,14 @@
  */
 package org.hibernate.envers.test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.SystemException;
 
+import io.hypersistence.optimizer.HypersistenceOptimizer;
+import io.hypersistence.optimizer.core.config.JpaConfig;
+import io.hypersistence.optimizer.core.exception.DefaultExceptionHandler;
 import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.dialect.Dialect;
@@ -37,6 +37,8 @@ import org.hibernate.testing.jta.TestingJtaPlatformImpl;
 import org.hibernate.testing.junit4.Helper;
 import org.jboss.logging.Logger;
 import org.junit.After;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author Strong Liu (stliu@hibernate.org)
@@ -69,6 +71,10 @@ public abstract class BaseEnversJPAFunctionalTestCase extends AbstractEnversTest
 		return entityManagerFactoryBuilder.getMetadata();
 	}
 
+	private HypersistenceOptimizer hypersistenceOptimizer;
+
+	private List<Exception> hypersistenceOptimizerExceptions = new ArrayList<Exception>();
+
 	@BeforeClassOnce
 	@SuppressWarnings({"UnusedDeclaration"})
 	public void buildEntityManagerFactory() throws Exception {
@@ -79,6 +85,14 @@ public abstract class BaseEnversJPAFunctionalTestCase extends AbstractEnversTest
 				buildSettings()
 		);
 		entityManagerFactory = entityManagerFactoryBuilder.build().unwrap( SessionFactoryImplementor.class );
+
+		hypersistenceOptimizer = new HypersistenceOptimizer(
+				new JpaConfig(entityManagerFactory)
+						.setExceptionHandler(e -> {
+							DefaultExceptionHandler.INSTANCE.handle(e);
+							hypersistenceOptimizerExceptions.add(e);
+						})
+		);
 
 		serviceRegistry = (StandardServiceRegistryImpl) entityManagerFactory.getServiceRegistry()
 				.getParentServiceRegistry();
@@ -203,6 +217,9 @@ public abstract class BaseEnversJPAFunctionalTestCase extends AbstractEnversTest
 	public void releaseEntityManagerFactory() {
 		if ( entityManagerFactory != null && entityManagerFactory.isOpen() ) {
 			entityManagerFactory.close();
+		}
+		if (!hypersistenceOptimizerExceptions.isEmpty()) {
+			fail("The test thrown the following exceptions: " + hypersistenceOptimizerExceptions);
 		}
 	}
 

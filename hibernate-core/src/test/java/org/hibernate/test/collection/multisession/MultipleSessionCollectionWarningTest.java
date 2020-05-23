@@ -88,7 +88,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 
 		// the collection session should still be s1; the collection is no longer "connected" because its
 		// CollectionEntry has been removed.
-		assertSame( s1, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s1), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		Session s2 = openSession();
 		s2.getTransaction().begin();
@@ -104,7 +104,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 		assertTrue( triggerable.wasTriggered() );
 
 		// collection's session should be overwritten with s2
-		assertSame( s2, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s2), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		s2.getTransaction().rollback();
 		s2.close();
@@ -138,7 +138,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 
 		// the collection session should still be s1; the collection is no longer "connected" because its
 		// CollectionEntry has been removed.
-		assertSame( s1, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s1), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		Session s2 = openSession();
 		s2.getTransaction().begin();
@@ -154,7 +154,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 		assertTrue( triggerable.wasTriggered() );
 
 		// collection's session should be overwritten with s2
-		assertSame( s2, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s2), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		s2.getTransaction().rollback();
 		s2.close();
@@ -185,7 +185,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 
 		// the collection session should still be s1; the collection is no longer "connected" because its
 		// CollectionEntry has been removed.
-		assertSame( s1, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s1), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		Session s2 = openSession();
 		s2.getTransaction().begin();
@@ -201,7 +201,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 		assertTrue( triggerable.wasTriggered() );
 
 		// collection's session should still be s1
-		assertSame( s1, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s1), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		s2.getTransaction().rollback();
 		s2.close();
@@ -227,7 +227,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 		assertNotNull( ce );
 
 		// the collection session should be s1
-		assertSame( s1, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s1), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		Session s2 = openSession();
 		s2.getTransaction().begin();
@@ -243,7 +243,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 		assertTrue( triggerable.wasTriggered() );
 
 		// collection's session should still be s1
-		assertSame( s1, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s1), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		s2.getTransaction().rollback();
 		s2.close();
@@ -272,7 +272,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 		assertNotNull( ce );
 
 		// the collection session should be s1
-		assertSame( s1, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s1), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		Session s2 = openSession();
 		s2.getTransaction().begin();
@@ -288,7 +288,7 @@ public class MultipleSessionCollectionWarningTest extends BaseCoreFunctionalTest
 		assertTrue( triggerable.wasTriggered() );
 
 		// collection's session should still be s1
-		assertSame( s1, ( (AbstractPersistentCollection) p.children ).getSession() );
+		assertSame( getSessionDelegate(s1), ( (AbstractPersistentCollection) p.children ).getSession() );
 
 		s2.getTransaction().rollback();
 		s2.close();

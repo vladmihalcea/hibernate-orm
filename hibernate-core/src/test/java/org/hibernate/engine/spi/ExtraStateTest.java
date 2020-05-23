@@ -60,7 +60,7 @@ public class ExtraStateTest extends BaseCoreFunctionalTestCase {
 	}
 
 	private EntityEntry getEntityEntry(Object object) {
-		return ( (SessionImpl) session ).getPersistenceContext().getEntry( object );
+		return ( (SharedSessionContractImplementor) session ).getPersistenceContext().getEntry( object );
 	}
 
 	@Override

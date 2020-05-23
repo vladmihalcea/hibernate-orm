@@ -372,7 +372,7 @@ public class ProxyTest extends BaseCoreFunctionalTestCase {
 		Container container = ( Container ) all.get( 0 );
 		s.delete( container );
 		// force a snapshot retrieval of the proxied container
-		SessionImpl sImpl = ( SessionImpl ) s;
+		SessionImpl sImpl = s.unwrap( SessionImpl.class );
 		sImpl.getPersistenceContext().getDatabaseSnapshot(
 				lastContainerId,
 		        sImpl.getFactory().getEntityPersister( Container.class.getName() )

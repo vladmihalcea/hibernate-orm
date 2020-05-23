@@ -79,7 +79,7 @@ public class VersionedNoCascadeDereferencedCollectionTest extends AbstractDerefe
 		// Ensure maniesEEOneStateOrig has role, key, and session properly defined (even though one.manies == null)
 		assertEquals( role, maniesEEOneStateOrig.getRole() );
 		assertEquals( one.getId(), maniesEEOneStateOrig.getKey() );
-		assertSame( s, maniesEEOneStateOrig.getSession() );
+		assertSame( getSessionDelegate(s), maniesEEOneStateOrig.getSession() );
 
 		// Ensure there is a CollectionEntry for maniesEEOneStateOrig and that the role, persister, and key are set properly.
 		CollectionEntry ceManiesOrig = getCollectionEntry( s, maniesEEOneStateOrig );
@@ -153,7 +153,7 @@ public class VersionedNoCascadeDereferencedCollectionTest extends AbstractDerefe
 		// Ensure maniesEEOneStateOrig has role, key, and session properly defined (even though one.manies == null)
 		assertEquals( role, maniesEEOneStateOrig.getRole() );
 		assertEquals( one.getId(), maniesEEOneStateOrig.getKey() );
-		assertSame( s, maniesEEOneStateOrig.getSession() );
+		assertSame( getSessionDelegate(s), maniesEEOneStateOrig.getSession() );
 
 		// Ensure there is a CollectionEntry for maniesEEOneStateOrig and that the role, persister, and key are set properly.
 		CollectionEntry ceManies = getCollectionEntry( s, maniesEEOneStateOrig );
@@ -229,7 +229,7 @@ public class VersionedNoCascadeDereferencedCollectionTest extends AbstractDerefe
 		// Ensure maniesEEOneStateOrig has role, key, and session properly defined (even though one.manies == null)
 		assertEquals( role, maniesEEOneStateOrig.getRole() );
 		assertEquals( one.getId(), maniesEEOneStateOrig.getKey() );
-		assertSame( s, maniesEEOneStateOrig.getSession() );
+		assertSame( getSessionDelegate(s), maniesEEOneStateOrig.getSession() );
 
 		// Ensure there is a CollectionEntry for maniesEEOneStateOrig and that the role, persister, and key are set properly.
 		CollectionEntry ceManiesOrig = getCollectionEntry( s, maniesEEOneStateOrig );
@@ -263,7 +263,7 @@ public class VersionedNoCascadeDereferencedCollectionTest extends AbstractDerefe
 		assertTrue( PersistentCollection.class.isInstance( one.getManies() ) );
 		assertEquals( role, ( (PersistentCollection) one.getManies() ).getRole() );
 		assertEquals( one.getId(), ( (PersistentCollection) one.getManies() ).getKey() );
-		assertSame( s, ( (AbstractPersistentCollection) one.getManies() ).getSession() );
+		assertSame( getSessionDelegate(s), ( (AbstractPersistentCollection) one.getManies() ).getSession() );
 
 		// Ensure eeOne.getLoadedState() contains the new collection.
 		assertSame( one.getManies(), eeOne.getLoadedValue( "manies" ) );

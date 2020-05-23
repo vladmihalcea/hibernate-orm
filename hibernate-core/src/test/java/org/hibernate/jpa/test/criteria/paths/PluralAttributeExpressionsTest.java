@@ -12,6 +12,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.jpa.test.callbacks.Translation;
 import org.hibernate.jpa.test.metamodel.AbstractMetamodelSpecificTest;
 import org.hibernate.jpa.test.metamodel.Address;
 import org.hibernate.jpa.test.metamodel.Address_;
@@ -20,7 +21,6 @@ import org.hibernate.jpa.test.metamodel.Article_;
 import org.hibernate.jpa.test.metamodel.MapEntity;
 import org.hibernate.jpa.test.metamodel.MapEntityLocal;
 import org.hibernate.jpa.test.metamodel.MapEntity_;
-import org.hibernate.jpa.test.metamodel.Translation;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 
 import org.hibernate.testing.FailureExpected;

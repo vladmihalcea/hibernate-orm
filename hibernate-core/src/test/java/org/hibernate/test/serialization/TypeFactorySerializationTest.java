@@ -14,6 +14,7 @@ import org.hibernate.internal.SessionFactoryRegistry;
 import org.hibernate.internal.util.SerializationHelper;
 import org.hibernate.type.TypeFactory;
 
+import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 import org.hibernate.testing.junit4.BaseUnitTestCase;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ public class TypeFactorySerializationTest extends BaseUnitTestCase {
 
 		try {
 			// SessionFactory is registered.
-			assertSame( factory, SessionFactoryRegistry.INSTANCE.getNamedSessionFactory( NAME ) );
+			assertSame( BaseCoreFunctionalTestCase.getSessionFactoryDelegate( factory), BaseCoreFunctionalTestCase.getSessionFactoryDelegate(SessionFactoryRegistry.INSTANCE.getNamedSessionFactory( NAME )) );
 
 			// get reference to the TypeFactory and serialize it
 			TypeFactory typeFactory = factory.getTypeResolver().getTypeFactory();

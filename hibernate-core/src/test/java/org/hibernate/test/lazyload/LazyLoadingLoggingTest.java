@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import org.hibernate.LazyInitializationException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.AbstractSharedSessionContract;
 
 import org.hibernate.testing.TestForIssue;
@@ -80,7 +81,7 @@ public class LazyLoadingLoggingTest
 	public void testDisconnect() {
 		doInHibernate( this::sessionFactory, session -> {
 			Address address = session.load( Address.class, 1L );
-			AbstractSharedSessionContract sessionContract = (AbstractSharedSessionContract) session;
+			SharedSessionContractImplementor sessionContract = (SharedSessionContractImplementor) session;
 			sessionContract.getJdbcCoordinator().close();
 
 			try {

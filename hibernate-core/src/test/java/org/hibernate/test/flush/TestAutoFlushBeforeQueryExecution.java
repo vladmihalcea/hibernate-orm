@@ -59,7 +59,7 @@ public class TestAutoFlushBeforeQueryExecution extends BaseCoreFunctionalTestCas
 		assertTrue( publisher.getAuthors().isEmpty() );
 
 		final PersistenceContext persistenceContext = ( (SessionImplementor) s ).getPersistenceContext();
-		final ActionQueue actionQueue = ( (SessionImpl) s ).getActionQueue();
+		final ActionQueue actionQueue = ( (SessionImplementor) s ).getActionQueue();
 		assertEquals( 1, persistenceContext.getCollectionEntriesSize() );
 		assertEquals( 1, persistenceContext.getCollectionsByKey().size() );
 		assertTrue( persistenceContext.getCollectionEntries().containsKey( publisher.getAuthors() ) );
@@ -138,7 +138,7 @@ public class TestAutoFlushBeforeQueryExecution extends BaseCoreFunctionalTestCas
 		assertTrue( publisher.getAuthors().isEmpty() );
 
 		final PersistenceContext persistenceContext = ( (SessionImplementor) s ).getPersistenceContext();
-		final ActionQueue actionQueue = ( (SessionImpl) s ).getActionQueue();
+		final ActionQueue actionQueue = ( (SessionImplementor) s ).getActionQueue();
 		assertEquals( 1, persistenceContext.getCollectionEntriesSize() );
 		assertEquals( 1, persistenceContext.getCollectionsByKey().size() );
 		assertTrue( persistenceContext.getCollectionEntries().containsKey( publisher.getAuthors() ) );

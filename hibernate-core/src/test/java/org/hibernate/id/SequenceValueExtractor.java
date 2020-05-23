@@ -22,6 +22,7 @@ import org.hibernate.dialect.MariaDB103Dialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.SQLServer2012Dialect;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.exception.GenericJDBCException;
 import org.hibernate.jdbc.Work;
 
@@ -64,7 +65,7 @@ public class SequenceValueExtractor {
 		}
 	}
 
-	public long extractSequenceValue(final SessionImplementor sessionImpl) {
+	public long extractSequenceValue(final SharedSessionContractImplementor sessionImpl) {
 		class WorkImpl implements Work {
 			private long value;
 

@@ -23,6 +23,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.internal.SessionImpl;
 import org.hibernate.jdbc.Work;
 import org.hibernate.loader.plan.exec.process.spi.ResultSetProcessor;
 import org.hibernate.loader.plan.exec.query.spi.NamedParameterContext;
@@ -75,7 +76,7 @@ public class EntityAssociationResultSetProcessorTest extends BaseCoreFunctionalT
 
 			final List results = new ArrayList();
 
-			final Session workSession = openSession();
+			final Session workSession = openSession().unwrap( SessionImpl.class);
 			workSession.beginTransaction();
 			workSession.doWork(
 					new Work() {
@@ -154,7 +155,7 @@ public class EntityAssociationResultSetProcessorTest extends BaseCoreFunctionalT
 
 			final List results = new ArrayList();
 
-			final Session workSession = openSession();
+			final Session workSession = openSession().unwrap( SessionImpl.class);
 			workSession.beginTransaction();
 			workSession.doWork(
 					new Work() {

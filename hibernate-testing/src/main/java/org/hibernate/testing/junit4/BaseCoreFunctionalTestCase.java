@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import javax.persistence.SharedCacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl;
 import org.hibernate.boot.registry.BootstrapServiceRegistry;
@@ -33,6 +36,8 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.internal.SessionFactoryImpl;
+import org.hibernate.internal.SessionImpl;
 import org.hibernate.internal.build.AllowSysOut;
 import org.hibernate.internal.util.StringHelper;
 import org.hibernate.internal.util.config.ConfigurationHelper;
@@ -49,6 +54,10 @@ import org.hibernate.testing.cache.CachingRegionFactory;
 import org.hibernate.testing.transaction.TransactionUtil2;
 import org.junit.After;
 import org.junit.Before;
+
+import io.hypersistence.optimizer.HypersistenceOptimizer;
+import io.hypersistence.optimizer.core.config.HibernateConfig;
+import io.hypersistence.optimizer.core.exception.DefaultExceptionHandler;
 
 import static org.hibernate.testing.transaction.TransactionUtil.doInHibernate;
 import static org.junit.Assert.fail;
@@ -105,6 +114,10 @@ public abstract class BaseCoreFunctionalTestCase extends BaseUnitTestCase {
 		buildSessionFactory( null );
 	}
 
+	private HypersistenceOptimizer hypersistenceOptimizer;
+
+	private List<Exception> hypersistenceOptimizerExceptions = new ArrayList<Exception>();
+
 	protected void buildSessionFactory(Consumer<Configuration> configurationAdapter) {
 		// for now, build the configuration to get all the property settings
 		configuration = constructAndConfigureConfiguration();
@@ -117,6 +130,26 @@ public abstract class BaseCoreFunctionalTestCase extends BaseUnitTestCase {
 		afterConstructAndConfigureConfiguration( configuration );
 		sessionFactory = ( SessionFactoryImplementor ) configuration.buildSessionFactory( serviceRegistry );
 		afterSessionFactoryBuilt();
+
+		hypersistenceOptimizer = new HypersistenceOptimizer(
+				new HibernateConfig(sessionFactory)
+				.setExceptionHandler(e -> {
+                    DefaultExceptionHandler.INSTANCE.handle(e);
+                    hypersistenceOptimizerExceptions.add(e);
+                })
+		);
+	}
+
+	public static Session getSessionDelegate(Session session) {
+		if(session.getClass().getSimpleName().equals( "SessionDecorator" )) {
+			return session.unwrap( SessionImpl.class );
+		}
+		return session;
+	}
+
+	public static SessionFactory getSessionFactoryDelegate(SessionFactory sessionFactory) {
+		return sessionFactory.unwrap( SessionFactoryImpl.class );
+
 	}
 
 	protected void rebuildSessionFactory() {
@@ -235,6 +268,11 @@ public abstract class BaseCoreFunctionalTestCase extends BaseUnitTestCase {
 		return NO_MAPPINGS;
 	}
 
+	/**
+	 *
+	 * @deprecated (Since 6.0) this method will be renamed to getOrmXmlFile().
+	 */
+	@Deprecated
 	protected String[] getXmlFiles() {
 		// todo : rename to getOrmXmlFiles()
 		return NO_MAPPINGS;
@@ -320,6 +358,10 @@ public abstract class BaseCoreFunctionalTestCase extends BaseUnitTestCase {
 			}
 		}
 		serviceRegistry=null;
+
+		if (!hypersistenceOptimizerExceptions.isEmpty()) {
+			fail("The test thrown the following exceptions: " + hypersistenceOptimizerExceptions);
+		}
 	}
 
 	@OnFailure
@@ -354,7 +396,6 @@ public abstract class BaseCoreFunctionalTestCase extends BaseUnitTestCase {
 		cleanupSession();
 
 		assertAllDataRemoved();
-
 	}
 
 	private void completeStrayTransaction() {
@@ -387,7 +428,7 @@ public abstract class BaseCoreFunctionalTestCase extends BaseUnitTestCase {
 			sessionFactory.getCache().evictAllRegions();
 		}
 	}
-	
+
 	protected boolean isCleanupTestDataRequired() {
 		return false;
 	}

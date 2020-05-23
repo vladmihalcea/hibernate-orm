@@ -21,6 +21,9 @@ dependencies {
     compile ( libraries.jboss_jta ) {
         transitive=false;
     }
+    compile( libraries.slf4j )
+    compile( libraries.slf4j_log4j )
+    compile( libraries.hypersistence_optimizer )
 }
 
 // resources inherently exclude sources

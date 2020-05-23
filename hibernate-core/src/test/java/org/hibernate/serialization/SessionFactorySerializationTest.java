@@ -7,19 +7,17 @@
 package org.hibernate.serialization;
 
 
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
-
-import org.junit.Test;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionFactoryRegistry;
 import org.hibernate.internal.util.SerializationHelper;
-import org.hibernate.testing.junit4.BaseUnitTestCase;
 import org.hibernate.type.SerializationException;
+
+import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
+import org.hibernate.testing.junit4.BaseUnitTestCase;
+import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -47,7 +45,7 @@ public class SessionFactorySerializationTest extends BaseUnitTestCase {
 		SessionFactoryRegistry.INSTANCE.addSessionFactory( "some-other-uuid", NAME, false, factory, null );
 
 		SessionFactory factory2 = (SessionFactory) SerializationHelper.clone( factory );
-		assertSame( factory, factory2 );
+		assertSame( BaseCoreFunctionalTestCase.getSessionFactoryDelegate(factory), BaseCoreFunctionalTestCase.getSessionFactoryDelegate(factory2) );
 
 		SessionFactoryRegistry.INSTANCE.removeSessionFactory( "some-other-uuid", NAME, false, null );
 		factory.close();
