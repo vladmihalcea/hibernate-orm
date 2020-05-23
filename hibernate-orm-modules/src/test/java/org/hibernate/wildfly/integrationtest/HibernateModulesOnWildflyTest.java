@@ -6,8 +6,12 @@
  */
 package org.hibernate.wildfly.integrationtest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +30,10 @@ import org.jboss.shrinkwrap.descriptor.api.persistence21.PersistenceDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.persistence21.PersistenceUnitTransactionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import io.hypersistence.optimizer.HypersistenceOptimizer;
+import io.hypersistence.optimizer.core.config.JpaConfig;
+import io.hypersistence.optimizer.core.exception.DefaultExceptionHandler;
 
 /**
  * Integration test for using the current Hibernate ORM version on WildFly.
@@ -68,8 +76,20 @@ public class HibernateModulesOnWildflyTest {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	private HypersistenceOptimizer hypersistenceOptimizer;
+
+	private List<Exception> hypersistenceOptimizerExceptions = new ArrayList<Exception>();
+
 	@Test
 	public void shouldUseHibernateOrm52() {
+		hypersistenceOptimizer = new HypersistenceOptimizer(
+				new JpaConfig( entityManager.getEntityManagerFactory())
+						.setExceptionHandler(e -> {
+							DefaultExceptionHandler.INSTANCE.handle( e);
+							hypersistenceOptimizerExceptions.add(e);
+						})
+		);
+
 		Session session = entityManager.unwrap( Session.class );
 
 		Kryptonite kryptonite1 = new Kryptonite();
@@ -81,5 +101,9 @@ public class HibernateModulesOnWildflyTest {
 		Kryptonite loaded = session.find( Kryptonite.class, 1L );
 
 		assertThat( loaded.description, equalTo( "Some Kryptonite" ) );
+
+		if (!hypersistenceOptimizerExceptions.isEmpty()) {
+			fail("The test thrown the following exceptions: " + hypersistenceOptimizerExceptions);
+		}
 	}
 }

@@ -5,26 +5,28 @@
   ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later.
   ~ See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
   -->
-<module xmlns="urn:jboss:module:1.3" name="org.hibernate.envers" slot="${slot}">
+<module xmlns="urn:jboss:module:1.3" name="io.hypersistence" slot="${hypersistenceSlot}">
+    <properties>
+        <property name="jboss.api" value="private"/>
+    </properties>
+
     <resources>
-        <artifact name="${org.hibernate:hibernate-envers}"/>
+        <artifact name="${io.hypersistence:hypersistence-optimizer}"/>
     </resources>
 
     <dependencies>
         <module name="org.hibernate.orm" slot="${slot}"/>
-        <module name="com.fasterxml.classmate"/>
         <module name="javax.api"/>
         <module name="javax.annotation.api"/>
         <module name="javax.enterprise.api"/>
         <module name="javax.persistence.api"/>
         <module name="javax.transaction.api"/>
+        <module name="javax.validation.api"/>
         <module name="javax.xml.bind.api"/>
-        <module name="org.antlr"/>
-        <module name="org.dom4j"/>
+        <module name="org.jboss.as.jpa.spi"/>
         <module name="org.jboss.jandex"/>
         <module name="org.jboss.logging"/>
+        <module name="org.jboss.vfs"/>
         <module name="org.hibernate.commons-annotations"/>
-        <module name="net.bytebuddy" slot="${bytebuddySlot}" />
-        <module name="io.hypersistence" slot="2.1.0"/>
     </dependencies>
 </module>

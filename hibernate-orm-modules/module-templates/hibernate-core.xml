@@ -11,6 +11,7 @@
     </resources>
 
     <dependencies>
+        <module name="org.hibernate.core" slot="${slot}" services="import" optional="true"/>
         <module name="org.hibernate.envers" slot="${slot}" services="import" optional="true"/>
         <module name="com.fasterxml.classmate"/>
         <module name="javax.api"/>
@@ -29,7 +30,8 @@
         <module name="org.javassist" export="true"/>
         <module name="org.hibernate.commons-annotations"/>
         <module name="org.hibernate.orm.jipijapa-hibernate5" services="import" slot="${slot}"/>
-        <module name="net.bytebuddy" slot="${bytebuddySlot}" />
+        <module name="net.bytebuddy" slot="${bytebuddySlot}" services="import" export="true"/>
         <module name="org.infinispan.hibernate-cache" services="import" optional="true" slot="${infinispan2lcSlot}"/>
+        <module name="io.hypersistence" slot="${hypersistenceSlot}" services="import" export="true"/>
     </dependencies>
 </module>

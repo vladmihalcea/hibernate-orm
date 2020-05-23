@@ -24,6 +24,7 @@ ext {
 
     javassistVersion = '3.24.0-GA'
     byteBuddyVersion = '1.9.11'
+    hypersistenceOptimizerVersion = '2.1.0'
 
     geolatteVersion = '1.4.0'
 
@@ -139,7 +140,8 @@ ext {
             agroal_api:      "io.agroal:agroal-api:1.4",
             agroal_pool:     "io.agroal:agroal-pool:1.4",
 
-            hypersistence_optimizer: "io.hypersistence:hypersistence-optimizer:2.1.0",
+            hypersistence_optimizer: "io.hypersistence:hypersistence-optimizer:${hypersistenceOptimizerVersion}",
+
             slf4j: "org.slf4j:slf4j-api:1.7.26",
             slf4j_log4j: "org.slf4j:slf4j-log4j12:1.7.26",
 

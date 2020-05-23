@@ -34,6 +34,7 @@ ext {
 	// "10" for WildFly 10.x, "11" for 11.x, etc
 	wildFlyMajorVersion = project.wildflyVersion.split( '\\.' )[0]
 	bytebuddyVersion = project.byteBuddyVersion
+	hypersistenceOptimizerVersion = project.hypersistenceOptimizerVersion
 	artifactClassifier = "wildfly-${wildFlyMajorVersion}-dist"
 	wildFlyInstallDir = "$rootProject.buildDir/wildfly"
 	fpackStagingDir = file( "target/featurepack" ) //Target build directory for the Feature Pack
@@ -74,11 +75,12 @@ featurepack {
 	// Just the minor ORM version, e.g. "5.3"; Is used as an alias for the exact version
 	variables['minorSlot'] = rootProject.ormVersion.family
 	variables['bytebuddySlot'] = bytebuddyVersion
+	variables['hypersistenceSlot'] = hypersistenceOptimizerVersion
 	variables['infinispan2lcSlot'] = 'for-orm-' + rootProject.ormVersion.family
 	//Dependency on another Feature Pack:
 	dependency "org.wildfly:wildfly-feature-pack:${project.wildflyVersion}" // It will assume it is "zip" by default
 	//Ensure we declare all source repositories explicitly
-	autoAddRepositories = false
+	autoAddRepositories = true
 }
 
 task createCoreFeaturePackZip( type: Zip, dependsOn: [featurepack] ) {
@@ -99,7 +101,7 @@ provision {
 	variables['wildfly.version'] = project.wildflyVersion
 	variables['hibernate-orm.version'] = rootProject.ormVersion.fullName
 	//Ensure we declare all source repositories explicitly
-	autoAddRepositories = false
+	autoAddRepositories = true
 }
 
 dependencies {
@@ -111,8 +113,10 @@ dependencies {
 	testCompile libraries.shrinkwrap_descriptors_api_javaee
 	testCompile libraries.shrinkwrap_descriptors_impl_javaee
 	testCompile libraries.wildfly_arquillian_container_managed
+	testCompile( libraries.hypersistence_optimizer )
 
 	featurePack libraries.byteBuddy
+	featurePack libraries.hypersistence_optimizer
 	featurePack project( ":hibernate-core" )
 	featurePack project( ":hibernate-envers" )
 	featurePack "org.wildfly:jipijapa-hibernate5:${wildflyVersion}"
